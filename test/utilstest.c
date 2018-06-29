@@ -19,7 +19,7 @@
 #include "stellar_api.h"
 
 void test_print_amount(uint64_t amount, char *expected) {
-    char *asset = "XLM";
+    char *asset = "FIC";
     char printed[24];
     print_amount(amount, asset, printed);
 
@@ -70,11 +70,11 @@ void test_base64_encode(uint8_t *data, uint8_t len, char *expected) {
 
 int main(int argc, char *argv[]) {
 
-    test_print_amount(1, "0.0000001 XLM");
-    test_print_amount(10000000, "1 XLM");
-    test_print_amount(100000000000001, "10000000.0000001 XLM");
-    test_print_amount(100000001, "10.0000001 XLM");
-    test_print_amount(100000001000000, "10000000.1 XLM");
+    test_print_amount(1, "0.0000001 FIC");
+    test_print_amount(10000000, "1 FIC");
+    test_print_amount(100000000000001, "10000000.0000001 FIC");
+    test_print_amount(100000001, "10.0000001 FIC");
+    test_print_amount(100000001000000, "10000000.1 FIC");
 
     test_print_uint(1230, "1230");
 

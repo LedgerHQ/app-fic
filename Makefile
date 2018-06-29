@@ -20,8 +20,8 @@ $(error Environment variable BOLOS_SDK is not set)
 endif
 include $(BOLOS_SDK)/Makefile.defines
 
-APPNAME = Stellar
-APP_LOAD_PARAMS=--appFlags 0x40 --path "44'/148'" --curve ed25519 $(COMMON_LOAD_PARAMS)
+APPNAME = FIC
+APP_LOAD_PARAMS=--appFlags 0x40 --path "44'/5248'" --curve ed25519 $(COMMON_LOAD_PARAMS)
 
 APPVERSION_M=3
 APPVERSION_N=0

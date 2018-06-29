@@ -97,7 +97,7 @@ void print_asset_t(asset_t *asset, char *out);
 /** concatenate assetCode and assetIssuer */
 void print_asset(char *assetCode, char *assetIssuer, char *out);
 
-/** "XLM" or "native" depending on the network id */
+/** "FIC" or "native" depending on the network id */
 void print_native_asset_code(uint8_t network, char *out);
 
 /** string representation of flags present */

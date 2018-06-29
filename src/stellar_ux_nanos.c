@@ -66,7 +66,7 @@ const ux_menu_entry_t menu_about[] = {
     };
 
 const ux_menu_entry_t menu_main[] = {
-    {NULL, NULL, 0, &C_icon_stellar, "Use wallet to", "view accounts", 33, 12},
+    {NULL, NULL, 0, &C_icon_fic, "Use wallet to", "view accounts", 33, 12},
     {menu_settings, NULL, 0, NULL, "Settings", NULL, 0, 0},
     {menu_about, NULL, 0, NULL, "About", NULL, 0, 0},
     {NULL, os_sched_exit, 0, &C_icon_dashboard, "Quit app", NULL, 50, 29},
