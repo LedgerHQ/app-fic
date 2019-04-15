@@ -63,6 +63,8 @@ void handle_apdu(volatile unsigned int *flags, volatile unsigned int *tx) {
             uint8_t dataLength = G_io_apdu_buffer[OFFSET_LC];
             uint8_t *dataBuffer = G_io_apdu_buffer + OFFSET_CDATA;
 
+            PRINTF("New APDU:\n%.*H\n", dataLength+4, G_io_apdu_buffer);
+
             // reset keep-alive for u2f just short of 30sec
             ctx.u2fTimer = U2F_REQUEST_TIMEOUT;
 
@@ -91,6 +93,9 @@ void handle_apdu(volatile unsigned int *flags, volatile unsigned int *tx) {
                 break;
             }
         }
+        CATCH(EXCEPTION_IO_RESET) {
+            THROW(EXCEPTION_IO_RESET);
+    }
         CATCH_OTHER(e) {
             switch (e & 0xF000) {
             case 0x6000:
@@ -118,10 +123,9 @@ void handle_apdu(volatile unsigned int *flags, volatile unsigned int *tx) {
 }
 
 void stellar_nv_state_init() {
-    if (N_stellar_pstate->initialized != 0x01) {
-        stellar_nv_state_t nv_state;
-        nv_state.initialized = 0x01;
-        nvm_write(N_stellar_pstate, (void *)&nv_state, sizeof(stellar_nv_state_t));
+    if (N_stellar_pstate.initialized != 0x01) {
+        uint8_t initialized = 0x01;
+        nvm_write((void *)&N_stellar_pstate, &initialized, 1);
     }
 }
 
@@ -158,6 +162,9 @@ void stellar_main(void) {
                 }
 
                 handle_apdu(&flags, &tx);
+            }
+            CATCH(EXCEPTION_IO_RESET) {
+                THROW(EXCEPTION_IO_RESET);
             }
             CATCH_OTHER(e) {
                 switch (e & 0xF000) {
@@ -230,7 +237,7 @@ unsigned char io_event(unsigned char channel) {
 
     case SEPROXYHAL_TAG_TICKER_EVENT:
 
-#ifdef TARGET_NANOS
+#ifndef TARGET_BLUE // S & X only
         if (G_io_apdu_media == IO_APDU_MEDIA_U2F && ctx.u2fTimer > 0) {
             ctx.u2fTimer -= 100;
             if (ctx.u2fTimer <= 0) {
@@ -239,12 +246,14 @@ unsigned char io_event(unsigned char channel) {
         }
 
         UX_TICKER_EVENT(G_io_seproxyhal_spi_buffer, {
+#ifndef TARGET_NANOX // S only
             if (UX_ALLOWED) {
                 if (ctx.reqType == CONFIRM_TRANSACTION) {
                     ui_approve_tx_next_screen(&ctx.req.tx);
                 }
                 UX_REDISPLAY();
             }
+#endif
         });
 #endif
         break;
@@ -286,19 +295,19 @@ __attribute__((section(".boot"))) int main(void) {
                 stellar_nv_state_init();
 
                 // deactivate usb before activating
-                USB_power(false);
-                USB_power(true);
+                USB_power(0);
+                USB_power(1);
+
+                ui_idle();
 
 #ifdef HAVE_BLE
-                BLE_power(false, NULL);
-                BLE_power(true, "Ledger Wallet");
+                BLE_power(0, NULL);
+                BLE_power(1, "Nano X");
 #endif // HAVE_BLE
 
 #if defined(TARGET_BLUE)
                 UX_SET_STATUS_BAR_COLOR(0xFFFFFF, COLOR_APP);
 #endif
-
-                ui_idle();
 
                 stellar_main();
             }
