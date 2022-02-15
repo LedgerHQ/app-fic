@@ -1,6 +1,6 @@
 #include "bolos_target.h"
 
-#ifdef TARGET_NANOX
+#if defined(TARGET_NANOX) || defined(TARGET_NANOS2)
 
 #include "stellar_ux.h"
 #include "stellar_types.h"
@@ -29,7 +29,7 @@ UX_FLOW_DEF_VALID(
   settings_hash_signing_change(1),
   {
     &C_icon_validate_14,
-    "Enable hash", 
+    "Enable hash",
     "signing?",
   });
 UX_FLOW_DEF_VALID(
@@ -38,7 +38,7 @@ UX_FLOW_DEF_VALID(
   settings_hash_signing_change(0),
   {
     &C_icon_crossmark,
-    "Disable", 
+    "Disable",
   });
 UX_FLOW_DEF_VALID(
   settings_hash_signing_go_back_step,

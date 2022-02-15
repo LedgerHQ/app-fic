@@ -20,7 +20,7 @@
 #endif
 #include "stellar_types.h"
 
-#ifdef TARGET_NANOX
+#if defined(TARGET_NANOX) || defined(TARGET_NANOS2)
 
 #include "stellar_format.h"
 #include "stellar_api.h"
